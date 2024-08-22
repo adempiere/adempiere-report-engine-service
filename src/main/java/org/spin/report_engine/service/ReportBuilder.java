@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.adempiere.core.domains.models.I_AD_PrintFormat;
 import org.adempiere.core.domains.models.I_AD_Process;
 import org.adempiere.exceptions.AdempiereException;
+import java.util.regex.Matcher;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MPInstance;
@@ -52,6 +53,7 @@ import org.spin.report_engine.util.ClassLoaderMapping;
 import org.spin.service.grpc.util.db.CountUtil;
 import org.spin.service.grpc.util.db.ParameterUtil;
 import org.spin.service.grpc.util.query.Filter;
+import java.util.regex.Pattern;
 
 /**
  * A builder that allows load a report definition from data and run
@@ -164,8 +166,19 @@ public class ReportBuilder {
 		this.isSummary = isSummary;
 		return this;
 	}
-	
+	public static String removeLimit(String sql) {
+		final String rowNumRegex = "(ROWNUM)\\s*(<>|<=|==|>=|!=|<|=|>)\\s*\\d{1,}\\b";
+		// ROWNUM <= 15
+		Pattern patternRowNum = Pattern.compile(
+		  rowNumRegex,
+		  Pattern.DOTALL
+		);
+		Matcher matchRowNum = patternRowNum.matcher(sql);
+		final String sqlWithoutLimit = matchRowNum.replaceAll("1=1");
+		return sqlWithoutLimit;
+	}
 	private ReportInfo get(String transactionName) {
+		
 		if(getPrintFormatId() <= 0) {
 			throw new AdempiereException("@FillMandatory@ @AD_PrintFormat_ID@");
 		}
@@ -173,7 +186,8 @@ public class ReportBuilder {
 		MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), getPrintFormatId(), null);
 		PrintFormat format = PrintFormat.newInstance(printFormat);
 		QueryDefinition queryDefinition = format.getQuery().withConditions(conditions).withInstanceId(getInstanceId()).withLimit(limit, offset).buildQuery();
-		int count = CountUtil.countRecords(queryDefinition.getCompleteQuery(), format.getTableName(), queryDefinition.getParameters());
+		String sqlLimit = removeLimit(queryDefinition.getCompleteQuery());
+		int count = CountUtil.countRecords(sqlLimit, format.getTableName(), queryDefinition.getParameters());
 		ReportInfo reportInfo = ReportInfo.newInstance(format, queryDefinition).withReportViewId(getReportViewId()).withInstanceId(getInstanceId()).withRecordCount(count);
 		DB.runResultSet(transactionName, queryDefinition.getCompleteQuery(), queryDefinition.getParameters(), resulset -> {
 			while (resulset.next()) {
