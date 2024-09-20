@@ -29,7 +29,7 @@ jobs:
           architecture: x64
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.0.2
           arguments: createRelease
@@ -164,7 +164,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
       - name: Push alpine image in Docker Hub
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/alpine.Dockerfile
@@ -204,7 +204,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Push alpine image in Docker Hub
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/multiarch.Dockerfile
@@ -270,7 +270,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Push alpine image in Docker Hub
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/proxy.Dockerfile
