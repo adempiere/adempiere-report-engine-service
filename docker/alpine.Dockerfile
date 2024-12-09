@@ -1,7 +1,7 @@
 FROM eclipse-temurin:11.0.24_8-jdk-alpine
 
 LABEL maintainer="ySenih@erpya.com; EdwinBetanc0urt@outlook.com;" \
-	description="Backend gRPC"
+	description="ADempiere Report Engine gRPC"
 
 # Init ENV with default values
 ENV \
@@ -32,7 +32,9 @@ RUN	apk update && \
 		tzdata \
 		bash \
 		fontconfig \
-		ttf-dejavu && \
+		ttf-dejavu \
+		msttcorefonts-installer && \
+	fc-cache -f && \
 	rm -rf /var/cache/apk/* && \
 	rm -rf /tmp/* && \
 	echo "Set Timezone..." && \

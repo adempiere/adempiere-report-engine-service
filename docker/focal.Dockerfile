@@ -1,7 +1,7 @@
 FROM eclipse-temurin:11.0.24_8-jdk-focal
 
 LABEL maintainer="ySenih@erpya.com; EdwinBetanc0urt@outlook.com;" \
-	description="Backend gRPC"
+	description="ADempiere Report Engine gRPC"
 
 # Init ENV with default values
 ENV \
@@ -27,12 +27,15 @@ EXPOSE ${SERVER_PORT}
 
 
 # Add operative system dependencies
-RUN	apt-get update && \
+RUN	echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections && \
+	apt-get update && \
 	apt-get install -y \
 		tzdata \
 		bash \
 		fontconfig \
-		ttf-dejavu && \
+		ttf-dejavu \
+		ttf-mscorefonts-installer && \
+	fc-cache -f && \
 	rm -rf /var/lib/apt/lists/* \
 	rm -rf /tmp/* && \
 	echo "Set Timezone..." && \
