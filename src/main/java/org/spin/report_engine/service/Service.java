@@ -201,9 +201,9 @@ public class Service {
 		if(request.getReportId() <= 0) {
 			throw new AdempiereException("@FillMandatory@ @IsReport@ @AD_Process_ID@");
 		}
-		MProcess reportDefinition = MProcess.get(Env.getCtx(), request.getRecordId());
+		MProcess reportDefinition = MProcess.get(Env.getCtx(), request.getReportId());
 		if (reportDefinition == null || reportDefinition.getAD_Process_ID() <= 0) {
-			throw new AdempiereException("@IsReport@ @AD_Process_ID@ (" + request.getRecordId() + ") @NotFound@");
+			throw new AdempiereException("@IsReport@ @AD_Process_ID@ (" + request.getReportId() + ") @NotFound@");
 		}
 
 		//	Add to recent Item
