@@ -6,8 +6,6 @@ plugins {
 	id 'application'
 	// Generate Visual Studio Code .vscode & .json project files
 	id 'visual-studio'
-	// Publish artifacts to an Apache Maven repository.
-	id 'maven-publish'
 	// Read .env files
 	id "io.github.uoxx3.project-environment" version "1.0.1"
 }
