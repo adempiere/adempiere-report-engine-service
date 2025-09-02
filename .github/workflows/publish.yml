@@ -91,12 +91,12 @@ jobs:
           tag_name: ${{ github.event.release.tag_name }}
           files: |
             artifacts/adempiere-report-engine-service.dsc
-            artifacts/adempiere-report-engine-service.zip
-            artifacts/adempiere-report-engine-service.zip.MD5
-            artifacts/adempiere-report-engine-service.tar
-            artifacts/adempiere-report-engine-service.tar.MD5
-            artifacts/envoy.yaml
             artifacts/env.yaml
+            artifacts/envoy.yaml
+            artifacts/adempiere-report-engine-service.zip.MD5
+            artifacts/adempiere-report-engine-service.zip
+            artifacts/adempiere-report-engine-service.tar.MD5
+            artifacts/adempiere-report-engine-service.tar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -162,8 +162,15 @@ jobs:
         run: |
           # Get the release type
           IS_PRE_RELEASE=${{ github.event.release.prerelease }}
+
+          # Get branch name from release
+          BRANCH_NAME="${{ github.event.release.target_commitish }}"
+          # clean branch name (clear invalid characters to Docker tags)
+          CLEAN_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g')
+
           # Set the base tags, always include the specific version tag
           TAGS="${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_REPO }}:${{ github.event.release.tag_name }}-alpine"
+          TAGS+=",${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_REPO }}:$CLEAN_BRANCH_NAME-alpine"
           # If it's not a pre-release, add the "latest" tag
           if [[ "$IS_PRE_RELEASE" == "false" ]]; then
             TAGS+=",${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_REPO }}:alpine"
@@ -222,8 +229,15 @@ jobs:
         run: |
           # Get the release type
           IS_PRE_RELEASE=${{ github.event.release.prerelease }}
+
+          # Get branch name from release
+          BRANCH_NAME="${{ github.event.release.target_commitish }}"
+          # clean branch name (clear invalid characters to Docker tags)
+          CLEAN_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g')
+
           # Set the base tags, always include the specific version tag
           TAGS="${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_REPO }}:${{ github.event.release.tag_name }}"
+          TAGS+=",${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_REPO }}:$CLEAN_BRANCH_NAME"
           # If it's not a pre-release, add the "latest" tag
           if [[ "$IS_PRE_RELEASE" == "false" ]]; then
             TAGS+=",${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_REPO }}:latest"
@@ -307,8 +321,15 @@ jobs:
         run: |
           # Get the release type
           IS_PRE_RELEASE=${{ github.event.release.prerelease }}
+
+          # Get branch name from release
+          BRANCH_NAME="${{ github.event.release.target_commitish }}"
+          # clean branch name (clear invalid characters to Docker tags)
+          CLEAN_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g')
+
           # Set the base tags, always include the specific version tag
           TAGS="${{ secrets.DOCKER_HUB_PROXY_REPO_NAME }}:${{ github.event.release.tag_name }}"
+          TAGS+=",${{ secrets.DOCKER_HUB_PROXY_REPO_NAME }}:$CLEAN_BRANCH_NAME"
           # If it's not a pre-release, add the "latest" tag
           if [[ "$IS_PRE_RELEASE" == "false" ]]; then
             TAGS+=",${{ secrets.DOCKER_HUB_PROXY_REPO_NAME }}:latest"

@@ -1,5 +1,26 @@
 # ADempiere Report Engine Service
 
+<p align="center">
+  <a href="https://adoptium.net/es/temurin/releases/?version=17">
+    <img src="https://badgen.net/badge/Java/17/orange" alt="Java">
+  </a>
+  <a href="https://hub.docker.com/r/openls/adempiere-report-engine-service">
+    <img src="https://img.shields.io/docker/pulls/openls/adempiere-report-engine-service.svg" alt="Docker Pulls">
+  </a>
+  <a href="https://github.com/adempiere/adempiere-report-engine-service/actions/workflows/ci.yml">
+    <img src="https://github.com/adempiere/adempiere-report-engine-service/actions/workflows/ci.yml/badge.svg" alt="Build GH Action">
+  </a>
+  <a href="https://github.com/adempiere/adempiere-report-engine-service/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/license-GNU/GPL%20(v2)-blue" alt="License">
+  </a>
+  <a href="https://github.com/adempiere/adempiere-report-engine-service/releases/latest">
+    <img src="https://img.shields.io/github/release/adempiere/adempiere-report-engine-service.svg" alt="GitHub release">
+  </a>
+  <a href="https://discord.gg/T6eH6A7PJZ">
+    <img src="https://badgen.net/badge/discord/join%20chat" alt="Discord">
+  </a>
+</p>
+
 This project define a new way for consume reports using gRPC inside ADempiere. Currently exists a usefull reporter with a good definition like **Print Format**, This repository don't want replace the current approach, just I try improve this with a new functionality as service with some features like:
 
 - Pagination
@@ -36,6 +57,16 @@ docker pull openls/adempiere-report-engine-service:alpine
 ### Where is the image?
 
 You can find it from [Docker Hub](https://hub.docker.com/r/openls/adempiere-report-engine-service/tags)
+
+#### Image variants
+ * `Eclipse Temurin Alpine` java development kit based:
+   * `docker pull openls/adempiere-report-engine-service:alpine`
+   * `docker pull openls/adempiere-report-engine-service:1.3.8-alpine`
+   * `docker pull openls/adempiere-report-engine-service:main-alpine`
+ * `Eclipse Temurin Noble` java development kit based:
+   * `docker pull openls/adempiere-report-engine-service:latest`
+   * `docker pull openls/adempiere-report-engine-service:1.3.8`
+   * `docker pull openls/adempiere-report-engine-service:main`
 
 ### Minimal Docker Requirements
 To use this Docker image you must have your Docker engine version greater than or equal to 3.0.
