@@ -30,7 +30,7 @@ import org.compiere.util.Util;
 import org.spin.report_engine.data.Cell;
 import org.spin.report_engine.format.PrintFormatColumn;
 import org.spin.report_engine.format.PrintFormatItem;
-import org.spin.report_engine.util.RecordUtil;
+import org.spin.service.grpc.util.base.RecordUtil;
 import org.spin.service.grpc.util.value.BooleanManager;
 import org.spin.service.grpc.util.value.NumberManager;
 
