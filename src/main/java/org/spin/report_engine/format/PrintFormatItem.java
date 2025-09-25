@@ -183,7 +183,9 @@ public class PrintFormatItem {
 		if(!Util.isEmpty(printFormatItem.getFormatPattern())) {
 			formatPattern = printFormatItem.getFormatPattern();
 		}
-		mappingClassName = printFormatItem.get_ValueAsString("MappingClassName");
+		if (printFormatItem.get_ColumnIndex("MappingClassName") >= 0) {
+			mappingClassName = printFormatItem.get_ValueAsString("MappingClassName");
+		}
 		columnWidth = printFormatItem.getMaxWidth();
 		isFixedWidth = printFormatItem.isFixedWidth();
 		if(printFormatItem.getAD_PrintFont_ID() > 0) {
