@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.adempiere.core.domains.models.I_AD_PInstance;
 import org.adempiere.core.domains.models.I_AD_PrintFormat;
 import org.adempiere.core.domains.models.I_AD_Process;
 import org.adempiere.exceptions.AdempiereException;
@@ -50,7 +51,7 @@ import org.spin.report_engine.format.QueryDefinition;
 import org.spin.report_engine.mapper.DefaultMapping;
 import org.spin.report_engine.mapper.IColumnMapping;
 import org.spin.report_engine.util.ClassLoaderMapping;
-import org.spin.report_engine.util.RecordUtil;
+import org.spin.service.grpc.util.base.RecordUtil;
 import org.spin.service.grpc.util.db.CountUtil;
 import org.spin.service.grpc.util.db.ParameterUtil;
 import org.spin.service.grpc.util.query.Filter;
@@ -85,6 +86,20 @@ public class ReportBuilder {
 
 	public ReportBuilder withFilters(List<Filter> filters) {
 		this.conditions = filters;
+
+		// Since the list of conditions is overwritten, you need to set the process instance again.
+		if (this.instanceId > 0) {
+			boolean isExists = this.conditions.stream().anyMatch(condition -> {
+				return I_AD_PInstance.COLUMNNAME_AD_PInstance_ID.equals(condition.getColumnName());
+			});
+			if (!isExists) {
+				// withParameter(I_AD_PInstance.COLUMNNAME_AD_PInstance_ID, this.instanceId);
+				withInstanceId(this.instanceId);
+			}
+		} else {
+			removeInstanceId();
+		}
+
 		return this;
 	}
 
@@ -125,10 +140,18 @@ public class ReportBuilder {
 	}
 
 	public ReportBuilder withInstanceId(int instanceId) {
+		this.instanceId = instanceId;
 		if(instanceId > 0) {
-			this.instanceId = instanceId;
-			withParameter("AD_PInstance_ID", instanceId);
+			withParameter(I_AD_PInstance.COLUMNNAME_AD_PInstance_ID, instanceId);
 		}
+		return this;
+	}
+
+	public ReportBuilder removeInstanceId() {
+		this.instanceId = 0;
+		this.conditions.removeIf(condition -> {
+			return I_AD_PInstance.COLUMNNAME_AD_PInstance_ID.equals(condition.getColumnName());
+		});
 		return this;
 	}
 
@@ -396,12 +419,12 @@ public class ReportBuilder {
 			this.recordId = recordId;
 
 			if(getPrintFormatId() <= 0) {
-				MColumn column = table.getColumn("AD_PrintFormat_ID");
+				MColumn column = table.getColumn(I_AD_PrintFormat.COLUMNNAME_AD_PrintFormat_ID);
 				if(column != null) {
 					PO entity = table.getPO(recordId, null);
 					if(entity != null && entity.get_ID() > 0) {
 						withPrintFormatId(
-							entity.get_ValueAsInt("AD_PrintFormat_ID")
+							entity.get_ValueAsInt(I_AD_PrintFormat.COLUMNNAME_AD_PrintFormat_ID)
 						);
 					}
 				}

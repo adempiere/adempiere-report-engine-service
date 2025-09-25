@@ -302,17 +302,24 @@ public class Cell {
 
 	@Override
 	public boolean equals(Object object) {
-		if(value == null && object == null) {
+		if (this.value == object) {
+			// same reference or both null
+			return true;
+		}
+		if(this.value == null && object == null) {
 			return false;
 		}
-		if(value == null && object != null) {
+		if(this.value == null && object != null) {
 			return false;
 		}
-		if(value != null && object == null) {
+		if(this.value != null && object == null) {
+			return false;
+		}
+		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
 		Cell cell = (Cell) object;
-		return value.equals(cell.getValue());
+		return this.value.equals(cell.getValue());
 	}
 
 }
