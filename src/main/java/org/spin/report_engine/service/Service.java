@@ -44,8 +44,8 @@ import org.spin.report_engine.data.ReportInfo;
 import org.spin.report_engine.data.Row;
 import org.spin.report_engine.export.XlsxExporter;
 import org.spin.report_engine.format.QueryDefinition;
-import org.spin.report_engine.util.RecordUtil;
 import org.spin.service.grpc.authentication.SessionManager;
+import org.spin.service.grpc.util.base.RecordUtil;
 import org.spin.service.grpc.util.db.LimitUtil;
 import org.spin.service.grpc.util.query.Filter;
 import org.spin.service.grpc.util.query.FilterManager;
@@ -107,7 +107,7 @@ public class Service {
 
 		// backend info
 		builder.setDateVersion(
-				ValueManager.getTimestampFromDate(
+				ValueManager.getProtoTimestampFromTimestamp(
 					TimeManager.getTimestampFromString(
 						Version.DATE_VERSION
 					)
@@ -495,34 +495,64 @@ public class Service {
 			Struct.Builder cellValue = Struct.newBuilder();
 			Cell cell = row.getCell(column.getPrintFormatItemId());
 			//	Put Value
-			cellValue.putFields(VALUE_KEY, ValueManager.getValueFromObject(cell.getValue()).build());
+			cellValue.putFields(
+				VALUE_KEY,
+				ValueManager.getProtoValueFromObject(cell.getValue()).build()
+			);
 			//	Table Name Reference
 			if(!Util.isEmpty(cell.getTableName())) {
-				cellValue.putFields(TABLE_NAME_KEY, ValueManager.getValueFromObject(cell.getTableName()).build());
+				cellValue.putFields(
+					TABLE_NAME_KEY,
+					ValueManager.getProtoValueFromObject(cell.getTableName()).build()
+				);
 			}
 			//	Put Display Value
-			cellValue.putFields(DISPLAY_VALUE_KEY, ValueManager.getValueFromString(cell.getDisplayValue()).build());
+			cellValue.putFields(
+				DISPLAY_VALUE_KEY,
+				ValueManager.getValueFromString(cell.getDisplayValue()).build()
+			);
 			//	Summary Values
 			if(cell.getSum() != null) {
-				cellValue.putFields(SUM_KEY, convertFunctionDisplayValue(ValueManager.getValueFromObject(cell.getSum()), cell.getSumDisplayValue()));
+				cellValue.putFields(
+					SUM_KEY,
+					convertFunctionDisplayValue(ValueManager.getProtoValueFromObject(cell.getSum()), cell.getSumDisplayValue())
+				);
 			}
 			if(cell.getMean() != null) {
-				cellValue.putFields(MEAN_KEY, convertFunctionDisplayValue(ValueManager.getValueFromObject(cell.getMean()), cell.getMeanDisplayValue()));
+				cellValue.putFields(
+					MEAN_KEY,
+					convertFunctionDisplayValue(ValueManager.getProtoValueFromObject(cell.getMean()), cell.getMeanDisplayValue())
+				);
 			}
 			if(cell.getCount() != null) {
-				cellValue.putFields(COUNT_KEY, convertFunctionDisplayValue(ValueManager.getValueFromObject(cell.getCount()), cell.getCountDisplayValue()));
+				cellValue.putFields(
+					COUNT_KEY,
+					convertFunctionDisplayValue(ValueManager.getProtoValueFromObject(cell.getCount()), cell.getCountDisplayValue())
+				);
 			}
 			if(cell.getMinimum() != null) {
-				cellValue.putFields(MINIMUM_KEY, convertFunctionDisplayValue(ValueManager.getValueFromObject(cell.getMinimum()), cell.getMinimumDisplayValue()));
+				cellValue.putFields(
+					MINIMUM_KEY,
+					convertFunctionDisplayValue(ValueManager.getProtoValueFromObject(cell.getMinimum()), cell.getMinimumDisplayValue())
+				);
 			}
 			if(cell.getMaximum() != null) {
-				cellValue.putFields(MAXIMUM_KEY, convertFunctionDisplayValue(ValueManager.getValueFromObject(cell.getMaximum()), cell.getMaximumDisplayValue()));
+				cellValue.putFields(
+					MAXIMUM_KEY,
+					convertFunctionDisplayValue(ValueManager.getProtoValueFromObject(cell.getMaximum()), cell.getMaximumDisplayValue())
+				);
 			}
 			if(cell.getVariance() != null) {
-				cellValue.putFields(VARIANCE_KEY, convertFunctionDisplayValue(ValueManager.getValueFromObject(cell.getVariance()), cell.getVarianceDisplayValue()));
+				cellValue.putFields(
+					VARIANCE_KEY,
+					convertFunctionDisplayValue(ValueManager.getProtoValueFromObject(cell.getVariance()), cell.getVarianceDisplayValue())
+				);
 			}
 			if(cell.getDeviation() != null) {
-				cellValue.putFields(DEVIATION_KEY, convertFunctionDisplayValue(ValueManager.getValueFromObject(cell.getDeviation()), cell.getDeviationDisplayValue()));
+				cellValue.putFields(
+					DEVIATION_KEY,
+					convertFunctionDisplayValue(ValueManager.getProtoValueFromObject(cell.getDeviation()), cell.getDeviationDisplayValue())
+				);
 			}
 			//	Put Cell Value
 			cells.putFields("" + column.getPrintFormatItemId(), Value.newBuilder().setStructValue(cellValue.build()).build());

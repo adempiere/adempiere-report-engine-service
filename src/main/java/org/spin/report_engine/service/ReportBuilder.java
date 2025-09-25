@@ -51,7 +51,7 @@ import org.spin.report_engine.format.QueryDefinition;
 import org.spin.report_engine.mapper.DefaultMapping;
 import org.spin.report_engine.mapper.IColumnMapping;
 import org.spin.report_engine.util.ClassLoaderMapping;
-import org.spin.report_engine.util.RecordUtil;
+import org.spin.service.grpc.util.base.RecordUtil;
 import org.spin.service.grpc.util.db.CountUtil;
 import org.spin.service.grpc.util.db.ParameterUtil;
 import org.spin.service.grpc.util.query.Filter;
