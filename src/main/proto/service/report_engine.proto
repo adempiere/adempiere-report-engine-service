@@ -33,6 +33,9 @@ service ReportEngine {
 	rpc GetReport(GetReportRequest) returns (Report) {
 		option (google.api.http) = {
 			get: "/v1/report-engine/reports/{report_id}"
+			additional_bindings: {
+				get: "/v1/report-engine/reports/{report_id}/window/{table_name}/{record_id}"
+			}
 		};
 	}
 	
