@@ -142,7 +142,13 @@ public class PrintFormatItem {
 	
 	private PrintFormatItem(MPrintFormatItem printFormatItem) {
 		name = printFormatItem.get_Translation(I_AD_PrintFormatItem.COLUMNNAME_Name);
+		if (Util.isEmpty(name, true)) {
+			name = printFormatItem.getName();
+		}
 		printText = printFormatItem.get_Translation(I_AD_PrintFormatItem.COLUMNNAME_PrintName);
+		if (Util.isEmpty(printText, true)) {
+			printText = printFormatItem.getPrintName();
+		}
 		sequence = printFormatItem.getSeqNo();
 		sortSequence = printFormatItem.getSortNo();
 		printFormatItemId = printFormatItem.getAD_PrintFormatItem_ID();
