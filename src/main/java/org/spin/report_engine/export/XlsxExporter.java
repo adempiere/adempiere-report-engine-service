@@ -169,8 +169,7 @@ public class XlsxExporter implements IReportEngineExporter {
 		//	create header
 		Row headerRow = sheet.createRow(0);
 		List<ColumnInfo> columns = reportInfo.getColumns();
-		IntStream.range(0, columns.size())
-		.forEach(cellNumber -> {
+		IntStream.range(0, columns.size()).forEach(cellNumber -> {
 			Cell sheetCell = headerRow.createCell(cellNumber);
 			ColumnInfo columnInfo = columns.get(cellNumber);
 			String value = Util.stripDiacritics(columnInfo.getTitle());
@@ -183,8 +182,7 @@ public class XlsxExporter implements IReportEngineExporter {
 		List<org.spin.report_engine.data.Row> rows = reportInfo.isSummary() ? reportInfo.getSummaryRows(): reportInfo.getCompleteRows();
 		IntStream.range(0, rows.size()).forEach(rowNumber -> {
 			Row sheetRow = sheet.createRow(rowNumber + 1);
-			IntStream.range(0, columns.size())
-			.forEach(columnNumber -> {
+			IntStream.range(0, columns.size()).forEach(columnNumber -> {
 				Cell sheetCell = sheetRow.createCell(columnNumber);
 				ColumnInfo columnInfo = columns.get(columnNumber);
 				org.spin.report_engine.data.Row rowValue = rows.get(rowNumber);
