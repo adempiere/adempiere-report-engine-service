@@ -143,11 +143,12 @@ public class PrintFormatItem {
 	private PrintFormatItem(MPrintFormatItem printFormatItem) {
 		name = printFormatItem.get_Translation(I_AD_PrintFormatItem.COLUMNNAME_Name);
 		if (Util.isEmpty(name, true)) {
+			// TODO: Validate centrally maintained with column
 			name = printFormatItem.getName();
 		}
 		printText = printFormatItem.get_Translation(I_AD_PrintFormatItem.COLUMNNAME_PrintName);
 		if (Util.isEmpty(printText, true)) {
-			printText = printFormatItem.getPrintName();
+			printText = name;
 		}
 		sequence = printFormatItem.getSeqNo();
 		sortSequence = printFormatItem.getSortNo();
