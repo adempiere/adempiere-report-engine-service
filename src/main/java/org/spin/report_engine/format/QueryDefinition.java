@@ -456,7 +456,7 @@ public class QueryDefinition {
 			this.parameters.add(valueToFilter);
 		}
 
-		String rescriction = "(" + columnName + sqlOperator + sqlValue + additionalSQL.toString() + ")";
+		String rescriction = "(" + columnName + " " + sqlOperator + sqlValue + additionalSQL.toString() + ")";
 
 		return rescriction;
 	}
