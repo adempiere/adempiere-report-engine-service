@@ -47,6 +47,7 @@ import org.compiere.util.Util;
 import org.spin.report_engine.data.Cell;
 import org.spin.report_engine.data.ReportInfo;
 import org.spin.report_engine.format.PrintFormat;
+import org.spin.report_engine.format.PrintFormatItem;
 import org.spin.report_engine.format.QueryDefinition;
 import org.spin.report_engine.mapper.DefaultMapping;
 import org.spin.report_engine.mapper.IColumnMapping;
@@ -250,35 +251,39 @@ public class ReportBuilder {
 			.withSummary(isSummary())
 		;
 		DB.runResultSet(transactionName, queryDefinition.getCompleteQuery(), queryDefinition.getParameters(), resulset -> {
+			final List<PrintFormatItem> printFormatsList = format.getItems();
 			while (resulset.next()) {
-				format.getItems().forEach(item -> {
+				printFormatsList.forEach(item -> {
 					Map<String, Cell> cells = new HashMap<String, Cell>();
 					queryDefinition.getQueryColumns()
-					.stream()
-					.filter(column -> column.getColumnName().equals(item.getColumnName()))
-					.forEach(column -> {
-						Cell cell = Optional.ofNullable(cells.get(column.getColumnName())).orElse(Cell.newInstance());
-						try {
-							if(column.isDisplayValue()) {
-								cell.withDisplayValue(resulset.getString(column.getColumnNameAlias()));
-							} else {
-								Object value = resulset.getObject(column.getColumnName());
-								cell.withValue(value);
-								//	Apply Default Mask
-								if(!Util.isEmpty(item.getMappingClassName())) {
-									IColumnMapping customMapping = ClassLoaderMapping.loadClass(item.getMappingClassName());
-									if(customMapping != null) {
-										customMapping.processValue(item, column, language, resulset, cell);
-									}
+						.stream()
+						.filter(column -> {
+							return column.getColumnName().equals(item.getColumnName());
+						})
+						.forEach(column -> {
+							Cell cell = Optional.ofNullable(cells.get(column.getColumnName())).orElse(Cell.newInstance());
+							try {
+								if(column.isDisplayValue()) {
+									cell.withDisplayValue(resulset.getString(column.getColumnNameAlias()));
 								} else {
-									DefaultMapping.newInstance().processValue(item, column, language, resulset, cell);
+									Object value = resulset.getObject(column.getColumnName());
+									cell.withValue(value);
+									//	Apply Default Mask
+									if(!Util.isEmpty(item.getMappingClassName())) {
+										IColumnMapping customMapping = ClassLoaderMapping.loadClass(item.getMappingClassName());
+										if(customMapping != null) {
+											customMapping.processValue(item, column, language, resulset, cell);
+										}
+									} else {
+										DefaultMapping.newInstance().processValue(item, column, language, resulset, cell);
+									}
 								}
+							} catch (Exception e) {
+								logger.warning(e.getLocalizedMessage());
 							}
-						} catch (Exception e) {
-							logger.warning(e.getLocalizedMessage());
-						}
-						cells.put(item.getColumnName(), cell);
-					});
+							cells.put(item.getColumnName(), cell);
+						})
+					;
 					reportInfo.addCell(item, cells.get(item.getColumnName()));
 				});
 				if(format.getTableName().equals("T_Report")) {
