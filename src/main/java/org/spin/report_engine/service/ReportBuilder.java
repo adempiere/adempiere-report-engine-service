@@ -282,7 +282,8 @@ public class ReportBuilder {
 								logger.warning(e.getLocalizedMessage());
 							}
 							cells.put(item.getColumnName(), cell);
-						});
+						})
+					;
 					reportInfo.addCell(item, cells.get(item.getColumnName()));
 				});
 				if(format.getTableName().equals("T_Report")) {
