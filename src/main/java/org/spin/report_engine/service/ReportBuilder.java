@@ -142,7 +142,7 @@ public class ReportBuilder {
 	public ReportBuilder withInstanceId(int instanceId) {
 		this.instanceId = instanceId;
 		if(instanceId > 0) {
-			withParameter(I_AD_PInstance.COLUMNNAME_AD_PInstance_ID, instanceId);
+			// withParameter(I_AD_PInstance.COLUMNNAME_AD_PInstance_ID, instanceId);
 		}
 		return this;
 	}
