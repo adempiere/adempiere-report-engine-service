@@ -229,6 +229,35 @@ public class ReportBuilder {
 		}
 		Language language = Language.getLoginLanguage();
 		MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), getPrintFormatId(), null);
+		if (printFormat == null || printFormat.getAD_PrintFormat_ID() <= 0) {
+			throw new AdempiereException("@AD_PrintFormat_ID@ (" + getPrintFormatId() + ") @NotFound@");
+		}
+
+		//	Mirror ReportEngine.get() logic: if the print format has no items, delete it and recreate
+		//	from the report view (preferred) or from the table.
+		if(printFormat.getItemCount() == 0) {
+			logger.warning("No Items - recreating: " + printFormat);
+			int reportViewId = printFormat.getAD_ReportView_ID();
+			int tableId = printFormat.getAD_Table_ID();
+			String printFormatName = printFormat.getName();
+			printFormat.delete(true); // Delete old print format
+			MPrintFormat recreatedPrintFormat = null;
+			if(reportViewId > 0) {
+				recreatedPrintFormat = MPrintFormat.createFromReportView(
+					Env.getCtx(),
+					reportViewId,
+					printFormatName
+				);
+			} else if(tableId > 0) {
+				recreatedPrintFormat = MPrintFormat.createFromTable(Env.getCtx(), tableId);
+			}
+			if (recreatedPrintFormat == null || recreatedPrintFormat.getAD_PrintFormat_ID() <= 0) {
+				throw new AdempiereException("@AD_PrintFormat_ID@ @NotFound@");
+			}
+			printFormat = recreatedPrintFormat;
+			withPrintFormatId(printFormat.getAD_PrintFormat_ID());
+		}
+
 		PrintFormat format = PrintFormat.newInstance(printFormat);
 		if (this.getReportViewId() > 0) {
 			format.setReportViewId(this.getReportViewId());
